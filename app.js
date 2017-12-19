@@ -1,5 +1,4 @@
 const express = require('express');
-const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const passport = require('passport');
@@ -22,14 +21,11 @@ mongoose.connection.on('error', (err) => {
 
 const app = express();
 
-const users = require('./routes/users');
-
 // Port Number
 const port = process.env.port | 3000;
 
 // CORS Middleware
 app.use(cors());
-
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -38,15 +34,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // Passport Middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
 require('./config/passport')(passport);
 
+// Routes
+const users = require('./routes/users');
 app.use('/users', users);
 
-// Index Route
-app.get('/', (req, res) => {
-  res.send('Invalid Endpoint');
-});
+const facilities = require('./routes/facilities');
+app.use('/facilities', facilities);
 
 // Start Server
 app.listen(port, () => {

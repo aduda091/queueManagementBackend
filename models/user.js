@@ -27,12 +27,12 @@ const User = module.exports = mongoose.model('User', UserSchema);
 
 module.exports.getUserById = function(id, callback){
   User.findById(id, callback);
-}
+};
 
 module.exports.getUserByMail = function(mail, callback){
   const query = {mail: mail}
   User.findOne(query, callback);
-}
+};
 
 module.exports.addUser = function(newUser, callback){
   bcrypt.genSalt(10, (err, salt) => {
@@ -42,11 +42,11 @@ module.exports.addUser = function(newUser, callback){
       newUser.save(callback);
     });
   });
-}
+};
 
 module.exports.comparePassword = function(candidatePassword, hash, callback){
   bcrypt.compare(candidatePassword, hash, (err, isMatch) => {
     if(err) throw err;
     callback(null, isMatch);
   });
-}
+};

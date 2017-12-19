@@ -27,3 +27,17 @@ POST /users/login   // Gives back a token
 ```bash
 GET /users/me         // Needs json web token to authorize
 ```
+
+```bash
+GET /facilities         // Returns facilities array
+```
+
+```bash
+POST /facilities         // Creates a facility
+```
+
+##JSON Format (Schema)
+###User
+firstName, lastName, mail, password
+###Facility
+name, address, mail, telephone
