@@ -15,7 +15,7 @@ npm install
 npm start
 ```
 
-##Endpoints
+## Endpoints
 ```bash
 POST /users/register
 ```
@@ -36,8 +36,8 @@ GET /facilities         // Returns facilities array
 POST /facilities         // Creates a facility
 ```
 
-##JSON Format (Schema)
-###User
-firstName, lastName, mail, password
-###Facility
-name, address, mail, telephone
+## JSON Format (Schema)
+### User
+{firstName, lastName, mail, password}
+### Facility
+{name, address, mail, telephone}
