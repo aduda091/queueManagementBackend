@@ -20,6 +20,10 @@ const UserSchema = mongoose.Schema({
   password: {
     type: String,
     required: true
+  },
+  role: {
+      type: String,
+      default: "user"
   }
 });
 
@@ -30,7 +34,7 @@ module.exports.getUserById = function(id, callback){
 };
 
 module.exports.getUserByMail = function(mail, callback){
-  const query = {mail: mail}
+  const query = {mail: mail};
   User.findOne(query, callback);
 };
 

@@ -5,6 +5,8 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
 
+/*   skeleton project taken from Brad Traversy https://github.com/bradtraversy/nodeauthapp  */
+
 // Connect To Database
 mongoose.Promise = global.Promise;
 mongoose.connect(config.database, { useMongoClient: true });

@@ -33,11 +33,19 @@ GET /facilities         // Returns facilities array
 ```
 
 ```bash
-POST /facilities         // Creates a facility
+GET /facilities/:id         // Returns a facility by ID
+```
+
+```bash
+POST /facilities         // Creates a facility (requires authorization)
+```
+
+```bash
+PUT /facilities/:id         // Edits a facility by ID (requires authorization)
 ```
 
 ## JSON Format (Schema)
 ### User
-{firstName, lastName, mail, password}
+{firstName, lastName, mail, password, role(defaults to 'user')}
 ### Facility
 {name, address, mail, telephone}

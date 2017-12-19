@@ -44,7 +44,12 @@ router.post('/login', (req, res, next) => {
         res.json({
           success: true,
           token: 'JWT ' + token,
-          user: user
+          user: {
+              firstName: user.firstName,
+              lastName: user.lastName,
+              mail: user.mail,
+              role: user.role
+          }
         });
       } else {
         return res.json({ success: false, msg: 'Wrong password' });
