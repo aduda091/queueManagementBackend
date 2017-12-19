@@ -11,7 +11,7 @@ router.post('/register', (req, res, next) => {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     mail: req.body.mail,
-    password: req.body.password
+    password: req.body.password,
   });
 
   User.addUser(newUser, (err, user) => {
@@ -38,18 +38,18 @@ router.post('/login', (req, res, next) => {
       if (err) throw err;
       if (isMatch) {
         const token = jwt.sign({ data: user }, config.secret, {
-          expiresIn: 2592000 // 1 month
+          expiresIn: 2592000, // 1 month
         });
 
         res.json({
           success: true,
           token: 'JWT ' + token,
           user: {
-              firstName: user.firstName,
-              lastName: user.lastName,
-              mail: user.mail,
-              role: user.role
-          }
+            firstName: user.firstName,
+            lastName: user.lastName,
+            mail: user.mail,
+            role: user.role,
+          },
         });
       } else {
         return res.json({ success: false, msg: 'Wrong password' });
@@ -59,8 +59,12 @@ router.post('/login', (req, res, next) => {
 });
 
 // Profile
-router.get('/me', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-  res.json({ user: req.user });
-});
+router.get(
+  '/me',
+  passport.authenticate('jwt', { session: false }),
+  (req, res, next) => {
+    res.json({ user: req.user });
+  }
+);
 
 module.exports = router;
