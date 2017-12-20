@@ -16,7 +16,7 @@ router.post('/register', (req, res, next) => {
 
     //prevent registration if mail is taken
     User.getUserByMail(req.body.mail, (error, foundUser) => {
-        if(!foundUser) {
+        if (!foundUser) {
             User.addUser(newUser, (err, user) => {
                 if (err) {
                     res.json({success: false, msg: 'Failed to register user', err});
@@ -54,6 +54,7 @@ router.post('/login', (req, res, next) => {
                     success: true,
                     token: 'JWT ' + token,
                     user: {
+                        id: user.id,
                         firstName: user.firstName,
                         lastName: user.lastName,
                         mail: user.mail,
@@ -67,10 +68,28 @@ router.post('/login', (req, res, next) => {
     });
 });
 
-// User profile
+// User profile read
 router.get('/me', passport.authenticate('jwt', {session: false}), (req, res, next) => {
         res.json({user: req.user});
     }
 );
 
+// User profile edit
+router.put('/me', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+    //check if user exists
+    User.getUserByMail(req.body.mail, (error, foundUser) => {
+            if (!foundUser || (req.body.mail === req.user.mail)) {
+                User.findOneAndUpdate({_id: req.user.id}, req.body, {new: true})
+                    .then(user => {
+                        res.send(user);
+                    })
+                    .catch(err => {
+                        res.status(404).send(err);
+                    });
+            } else {
+                res.status(409).json({success: false, msg: 'Mail already taken'})
+            }
+        }
+    );
+});
 module.exports = router;
