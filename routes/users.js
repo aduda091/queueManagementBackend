@@ -79,7 +79,7 @@ router.put('/me', passport.authenticate('jwt', {session: false}), (req, res, nex
     //check if user exists
     User.getUserByMail(req.body.mail, (error, foundUser) => {
             if (!foundUser || (req.body.mail === req.user.mail)) {
-                User.findOneAndUpdate({_id: req.user.id}, req.body, {new: true})
+                User.findOneAndUpdate({_id: req.user.id}, req.body, {new: true, runValidators: true})
                     .then(user => {
                         res.send(user);
                     })

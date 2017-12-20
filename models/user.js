@@ -1,21 +1,31 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const config = require('../config/database');
+const validator = require('validator');
 
 // User Schema
 const UserSchema = mongoose.Schema({
     firstName: {
         type: String,
         required: true,
+        trim: true
     },
     lastName: {
         type: String,
         required: true,
+        trim: true
     },
     mail: {
         type: String,
         required: true,
         alias: 'username',
+        trim: true,
+        validate: {
+            validator: validator.isEmail,
+            message: '{VALUE} is not a valid email',
+            isAsync: false
+        },
+
     },
     password: {
         type: String,
@@ -28,6 +38,12 @@ const UserSchema = mongoose.Schema({
 });
 
 const User = (module.exports = mongoose.model('User', UserSchema));
+
+//validate mail even on update
+UserSchema.pre('update', function(next) {
+    this.options.runValidators = true;
+    next();
+});
 
 module.exports.getUserById = function (id, callback) {
     User.findById(id, callback);

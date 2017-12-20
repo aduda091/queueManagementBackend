@@ -58,7 +58,7 @@ router.put('/:id', passport.authenticate('jwt', {session: false}), (req, res, ne
         if (role !== 'admin')
             res.status(403).json({success: false, msg: 'Unauthorized'});
 
-        Facility.findOneAndUpdate({_id: req.params.id}, req.body, {new: true})
+        Facility.findOneAndUpdate({_id: req.params.id}, req.body, {new: true, runValidators: true})
             .then(facility => {
                 res.send(facility);
             })

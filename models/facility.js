@@ -1,11 +1,33 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 // Facility Schema
 const FacilitySchema = mongoose.Schema({
-    name: String,
-    address: String,
-    mail: String,
-    telephone: String,
+    name: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    address: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    mail: {
+        type: String,
+        required: true,
+        trim: true,
+        validate: {
+            validator: validator.isEmail,
+            message: '{VALUE} is not a valid email',
+            isAsync: false
+        }
+    },
+    telephone: {
+        type: String,
+        required: true,
+        trim: true
+    }
 });
 
 const Facility = (module.exports = mongoose.model('Facility', FacilitySchema));
