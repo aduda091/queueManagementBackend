@@ -26,7 +26,7 @@ POST /users/login   // Gives back a token
 ```
 
 ```bash
-GET /users/me         // Returns user profile, needs token
+GET /users/me         // Returns user info and reservations, needs token
 ```
 
 ```bash
