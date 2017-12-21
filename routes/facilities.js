@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const config = require('../config/database');
 const Facility = require('../models/facility');
+const Queue = require('../models/queue');
 
 // Add New Facility
 router.post('/', passport.authenticate('jwt', {session: false}), (req, res, next) => {
@@ -65,6 +66,30 @@ router.put('/:id', passport.authenticate('jwt', {session: false}), (req, res, ne
             .catch(err => {
                 res.status(404).send(err);
             });
+    }
+);
+
+// Add a queue to selected facility
+router.post('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+        let role = req.user.role;
+        //protect route, limit to admins only
+        if (role !== 'admin')
+            res.status(403).json({success: false, msg: 'Unauthorized'});
+
+        let newQueue = new Queue({
+            name: req.body.name,
+            facility: req.params.id
+        });
+
+        Queue.addQueue(newQueue, (err, facility) => {
+            if (err) {
+                res.json({success: false, msg: 'Failed to create queue'});
+            } else {
+                res.json({success: true, msg: 'Queue created'});
+            }
+        });
+
+
     }
 );
 

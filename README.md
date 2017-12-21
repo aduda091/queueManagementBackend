@@ -25,7 +25,11 @@ POST /users/login   // Gives back a token
 ```
 
 ```bash
-GET /users/me         // Needs json web token to authorize
+GET /users/me         // Returns user profile, needs token
+```
+
+```bash
+PUT /users/me         // Edit logged in user, needs token
 ```
 
 ```bash
@@ -33,15 +37,19 @@ GET /facilities         // Returns facilities array
 ```
 
 ```bash
+POST /facilities         // Creates a facility, needs token 
+```
+
+```bash
 GET /facilities/:id         // Returns a facility by ID
 ```
 
 ```bash
-POST /facilities         // Creates a facility (requires authorization)
+PUT /facilities/:id         // Edits a facility by ID, needs token
 ```
 
 ```bash
-PUT /facilities/:id         // Edits a facility by ID (requires authorization)
+POST /facilities/:id         // Adds a queue to facility by ID, needs token
 ```
 
 ## JSON Format (Schema)
@@ -49,3 +57,5 @@ PUT /facilities/:id         // Edits a facility by ID (requires authorization)
 {firstName, lastName, mail, password, role(defaults to 'user')}
 ### Facility
 {name, address, mail, telephone}
+### Queue
+{name, facility, current, next}
