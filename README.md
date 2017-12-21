@@ -59,3 +59,5 @@ POST /facilities/:id         // Adds a queue to facility by ID, needs token
 {name, address, mail, telephone}
 ### Queue
 {name, facility, current, next}
+### Reservation
+{user, queue, time, number}

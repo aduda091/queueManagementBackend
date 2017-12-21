@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
-const config = require('../config/database');
 const Facility = require('../models/facility');
 const Queue = require('../models/queue');
 
@@ -45,7 +44,15 @@ router.get('/', (req, res, next) => {
 router.get('/:id', (req, res, next) => {
     Facility.findById(req.params.id)
         .then(facility => {
-            res.send(facility);
+            //disable ORM to customize response
+            let response = facility.toObject();
+            Queue.find({facility: req.params.id})
+                .populate('facility', 'name')
+                .exec()
+                .then(queues => {
+                    response.queues = queues;
+                    res.send(response);
+                })
         })
         .catch(err => {
             res.status(404).send(err);

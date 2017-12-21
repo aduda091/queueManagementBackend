@@ -6,12 +6,12 @@ const User = require('./user');
 // Reservation Schema
 const ReservationSchema = mongoose.Schema({
     user: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
     queue: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Queue',
         required: true
     },
@@ -27,8 +27,8 @@ const ReservationSchema = mongoose.Schema({
 });
 
 
+const Reservation = (module.exports = mongoose.model('Reservation', ReservationSchema));
+
 module.exports.addReservation = function (newReservation, callback) {
     newReservation.save(callback);
 };
-
-const Reservation = (module.exports = mongoose.model('Reservation', ReservationSchema));

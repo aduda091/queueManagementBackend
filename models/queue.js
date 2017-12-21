@@ -9,7 +9,7 @@ const QueueSchema = mongoose.Schema({
         trim: true
     },
     facility: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Facility',
         required: true
     },
@@ -26,8 +26,8 @@ const QueueSchema = mongoose.Schema({
 
 });
 
+const Queue = (module.exports = mongoose.model('Queue', QueueSchema));
+
 module.exports.addQueue = function (newQueue, callback) {
     newQueue.save(callback);
 };
-
-const Queue = (module.exports = mongoose.model('Queue', QueueSchema));
