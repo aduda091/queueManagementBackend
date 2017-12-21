@@ -72,10 +72,21 @@ router.post('/login', (req, res, next) => {
 // User profile read
 router.get('/me', passport.authenticate('jwt', {session: false}), (req, res, next) => {
 
-        Reservation.find({user: req.user.id}).populate('queue').exec().then(reservations => {
-            let response = {user:req.user, reservations};
-            res.json({response});
-        })
+        Reservation.find({user: req.user.id})
+            .populate({path: 'queue', populate: {path: 'facility'}})
+            .exec()
+            .then(reservations => {
+                let customUser = {
+                    id: req.user.id,
+                    firstName: req.user.firstName,
+                    lastName: req.user.lastName,
+                    mail: req.user.mail,
+                    role: req.user.role,
+                    reservations
+                };
+                //let response = {user:req.user, reservations};
+                res.json({user: customUser});
+            })
             .catch(err => {
                 res.send(err, 404);
             });
