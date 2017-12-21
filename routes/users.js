@@ -4,6 +4,7 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const config = require('../config/database');
 const User = require('../models/user');
+const Reservation = require('../models/reservation');
 
 // Register - create new user
 router.post('/register', (req, res, next) => {
@@ -70,7 +71,15 @@ router.post('/login', (req, res, next) => {
 
 // User profile read
 router.get('/me', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-        res.json({user: req.user});
+
+        Reservation.find({user: req.user.id}).populate('queue').exec().then(reservations => {
+            let response = {user:req.user, reservations};
+            res.json({response});
+        })
+            .catch(err => {
+                res.send(err, 404);
+            });
+
     }
 );
 

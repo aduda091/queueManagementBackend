@@ -90,7 +90,7 @@ router.post('/:id', passport.authenticate('jwt', {session: false}), (req, res, n
 
         Queue.addQueue(newQueue, (err, facility) => {
             if (err) {
-                res.json({success: false, msg: 'Failed to create queue'});
+                res.status(500).json({success: false, msg: 'Failed to create queue', err});
             } else {
                 res.json({success: true, msg: 'Queue created'});
             }

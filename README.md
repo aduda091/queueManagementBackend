@@ -60,7 +60,11 @@ GET /queues/:id         // Returns a single queue by ID
 ```
 
 ```bash
-PUT /queues/:id         // Edits a single queue by ID
+PUT /queues/:id         // Edits a single queue by ID, needs token
+```
+
+```bash
+POST /queues/:id         // Enter a queue by ID, needs token
 ```
 
 ## JSON Format (Schema)
@@ -71,4 +75,4 @@ PUT /queues/:id         // Edits a single queue by ID
 ### Queue
 {name, facility, current, next}
 ### Reservation
-{user, queue, time, number}
+{user, queue, time, number, current}
