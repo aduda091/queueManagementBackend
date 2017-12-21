@@ -16,6 +16,7 @@ npm start
 ```
 
 ## Endpoints
+### /users
 ```bash
 POST /users/register
 ```
@@ -32,6 +33,7 @@ GET /users/me         // Returns user profile, needs token
 PUT /users/me         // Edit logged in user, needs token
 ```
 
+### /facilities
 ```bash
 GET /facilities         // Returns facilities array
 ```
@@ -50,6 +52,15 @@ PUT /facilities/:id         // Edits a facility by ID, needs token
 
 ```bash
 POST /facilities/:id         // Adds a queue to facility by ID, needs token
+```
+
+### /queues
+```bash
+GET /queues/:id         // Returns a single queue by ID
+```
+
+```bash
+PUT /queues/:id         // Edits a single queue by ID
 ```
 
 ## JSON Format (Schema)

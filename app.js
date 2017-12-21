@@ -5,7 +5,7 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
 
-/*   skeleton project taken from Brad Traversy https://github.com/bradtraversy/nodeauthapp  */
+/*   skeleton project (user registration, authorization and login) taken from Brad Traversy at https://github.com/bradtraversy/nodeauthapp  */
 
 // Connect To Database
 mongoose.Promise = global.Promise;
@@ -38,12 +38,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./config/passport')(passport);
 
-// Routes
+/***     Routes    ***/
 const users = require('./routes/users');
 app.use('/users', users);
 
 const facilities = require('./routes/facilities');
 app.use('/facilities', facilities);
+
+const queues = require('./routes/queues');
+app.use('/queues', queues);
 
 // Start Server
 app.listen(port, () => {
