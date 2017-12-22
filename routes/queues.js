@@ -36,48 +36,9 @@ router.put('/:id', passport.authenticate('jwt', {session: false}), (req, res, ne
 
 });
 
-// Enter a queue by ID
-router.post('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-    //first check if the user is already in the selected queue
-    Reservation.findOne({user: req.user.id, queue: req.params.id}).then(existingReservation => {
-        if (existingReservation) res.status(409).json({success: false, msg: 'Already in this queue'});
-        else {
-            Queue.findOne({_id: req.params.id})
-                .populate('facility')
-                .exec()
-                .then(queue => {
-                    //load next property of the selected queue to set as user's number
-                    console.log("queue:", queue);
-                    let number = queue.next;
-                    let newReservation = new Reservation({
-                        user: req.user.id,
-                        queue: req.params.id,
-                        number: number
-                    });
-                    Reservation.addReservation(newReservation, (err, reservation) => {
-                        if (err) {
-                            res.status(500).json({success: false, msg: 'Failed to enter queue', err})
-                        } else {
-                            //update queue's next property
-                            Queue.findOneAndUpdate({_id: req.params.id}, {next: number + 1}, {
-                                new: true,
-                                runValidators: true
-                            })
-                                .then(newQueue => {
-                                    let response = reservation.toObject();
-                                    response.queue = queue;
-                                    res.json({success: true, msg: 'Entered queue', reservation: response});
-                                })
-                                .catch(error => {
-                                    res.status(500).json({success: false, msg: 'Failed to enter queue', err: error});
-                                })
-                        }
-                    })
-                });
-        }
-    });
-});
 
-//todo: admin route for NEXT user - increase queue's current by 1, edit all reservations in that queue (current property), mreturn current reservation data
-//todo: list all reservations in a queue (admin list view) - sort by time, number
+
+//todo: admin route for NEXT user - set queue's current number to the next found reservation's number property, return current reservation data
+//router.
+//todo: admin route to RESET current queue - delete all reservations and set current/next numbers to 0/1
 module.exports = router;

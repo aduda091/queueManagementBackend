@@ -34,7 +34,7 @@ router.get('/', (req, res, next) => {
     Facility.find()
         .then(facilities => {
             res.send(facilities);
-            //todo: embed queues?
+            //todo: embed queues? that would make it easy to read all data at once
         })
         .catch(err => {
             res.status(404).send(err);

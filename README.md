@@ -63,13 +63,13 @@ GET /queues/:id         // Returns a single queue by ID
 PUT /queues/:id         // Edits a single queue by ID, needs token
 ```
 
-```bash
-POST /queues/:id         // Enter a queue by ID, needs token
-```
-
 ### /reservations
 ```bash
 GET /reservations/:id         // Returns a single reservation by ID
+```
+
+```bash
+POST /reservations/queues/:id         // Enter a queue by ID, needs token
 ```
 
 ```bash
