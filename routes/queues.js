@@ -37,8 +37,27 @@ router.put('/:id', passport.authenticate('jwt', {session: false}), (req, res, ne
 });
 
 
-
 //todo: admin route for NEXT user - set queue's current number to the next found reservation's number property, return current reservation data
 //router.
-//todo: admin route to RESET current queue - delete all reservations and set current/next numbers to 0/1
+
+//admin route to RESET current queue - delete all reservations and set current/next numbers to 0/1
+router.delete('/:id/reset', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+    let role = req.user.role;
+    //protect route, limit to admins only
+    if (role !== 'admin')
+        res.status(403).json({success: false, msg: 'Unauthorized'});
+    //delete all reservations in the selected queue
+    Reservation.remove({queue: req.params.id}).then(response => {
+
+        Queue.findOneAndUpdate({_id: req.params.id}, {current: 0, next: 1}, {new: true, runValidators: true})
+            .then(queue => {
+                if (queue.current === 0 && queue.next === 1) {
+                    res.json({success: true, msg: 'Queue reset successful'});
+                } else {
+                    res.status(500).json({success: false, msg: 'Unable to reset queue', err});
+                }
+            })
+
+    });
+});
 module.exports = router;

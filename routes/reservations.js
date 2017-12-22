@@ -10,7 +10,8 @@ router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, ne
         .populate({path: 'queue', populate: {path: 'facility'}})
         .exec()
         .then(reservation => {
-            res.send(reservation);
+            if(reservation)res.send(reservation);
+            else res.status(404).json({success: false, msg: 'Unable to find reservation'});
         })
         .catch(err => {
             res.status(404).send(err);

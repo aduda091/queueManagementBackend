@@ -22,7 +22,7 @@ POST /users/register
 ```
 
 ```bash
-POST /users/login   // Gives back a token
+POST /users/login   // Returns a token
 ```
 
 ```bash
@@ -39,7 +39,7 @@ GET /facilities         // Returns facilities array
 ```
 
 ```bash
-POST /facilities         // Creates a facility, needs token 
+POST /facilities         // Creates a facility, needs admin token 
 ```
 
 ```bash
@@ -47,7 +47,7 @@ GET /facilities/:id         // Returns a facility by ID
 ```
 
 ```bash
-PUT /facilities/:id         // Edits a facility by ID, needs token
+PUT /facilities/:id         // Edits a facility by ID, needs admin token
 ```
 
 ```bash
@@ -60,7 +60,11 @@ GET /queues/:id         // Returns a single queue by ID
 ```
 
 ```bash
-PUT /queues/:id         // Edits a single queue by ID, needs token
+PUT /queues/:id         // Edits a single queue by ID, needs admin token
+```
+
+```bash
+DELETE /queues/:id/reset         // Resets a queue by ID (current:0, next:1, delete belonging reservations) needs admin token
 ```
 
 ### /reservations
