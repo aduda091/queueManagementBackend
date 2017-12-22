@@ -43,14 +43,12 @@ router.post('/:id', passport.authenticate('jwt', {session: false}), (req, res, n
         if (existingReservation) res.status(409).json({success: false, msg: 'Already in this queue'});
         else {
             Queue.findById(req.params.id).then(queue => {
-                //load current and next properties of the selected queue
+                //load next propertiy of the selected queue to set as user's number
                 let number = queue.next;
-                let current = queue.current;
                 let newReservation = new Reservation({
                     user: req.user.id,
                     queue: req.params.id,
-                    number: number,
-                    current: current
+                    number: number
                 });
                 Reservation.addReservation(newReservation, (err, reservation) => {
                     if (err) {
@@ -74,10 +72,6 @@ router.post('/:id', passport.authenticate('jwt', {session: false}), (req, res, n
     });
 });
 
-
 //todo: admin route for NEXT user - increase queue's current by 1, edit all reservations in that queue (current property), mreturn current reservation data
-//todo: remove reservation (exit queue) - careful about next pointing to nothing?
 //todo: list all reservations in a queue (admin list view) - sort by time, number
-
-
 module.exports = router;

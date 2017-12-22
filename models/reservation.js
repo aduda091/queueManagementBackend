@@ -23,11 +23,6 @@ const ReservationSchema = mongoose.Schema({
         type: Number,
         required: true,
         min: 1
-    },
-    current: {
-        type: Number,
-        required: true,
-        min: 0
     }
 });
 

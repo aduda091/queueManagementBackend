@@ -67,6 +67,15 @@ PUT /queues/:id         // Edits a single queue by ID, needs token
 POST /queues/:id         // Enter a queue by ID, needs token
 ```
 
+### /reservations
+```bash
+GET /reservations/:id         // Returns a single reservation by ID
+```
+
+```bash
+DELETE /reservations/:id         // Exit a queue (remove reservation) by ID, needs token
+```
+
 ## JSON Format (Schema)
 ### User
 {firstName, lastName, mail, password, role(defaults to 'user')}
@@ -75,4 +84,4 @@ POST /queues/:id         // Enter a queue by ID, needs token
 ### Queue
 {name, facility, current, next}
 ### Reservation
-{user, queue, time, number, current}
+{user, queue, time, number}

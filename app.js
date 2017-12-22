@@ -48,6 +48,9 @@ app.use('/facilities', facilities);
 const queues = require('./routes/queues');
 app.use('/queues', queues);
 
+const reservations = require('./routes/reservations');
+app.use('/reservations', reservations);
+
 // Start Server
 app.listen(port, () => {
     console.log('Server started on port ' + port);
