@@ -73,6 +73,10 @@ GET /reservations/:id         // Returns a single reservation by ID
 ```
 
 ```bash
+GET /reservations/queue/:id         // Returns all reservations in a queue by ID
+```
+
+```bash
 DELETE /reservations/:id         // Exit a queue (remove reservation) by ID, needs token
 ```
 
