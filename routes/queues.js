@@ -42,32 +42,38 @@ router.post('/:id', passport.authenticate('jwt', {session: false}), (req, res, n
     Reservation.findOne({user: req.user.id, queue: req.params.id}).then(existingReservation => {
         if (existingReservation) res.status(409).json({success: false, msg: 'Already in this queue'});
         else {
-            Queue.findById(req.params.id).then(queue => {
-                //load next propertiy of the selected queue to set as user's number
-                let number = queue.next;
-                let newReservation = new Reservation({
-                    user: req.user.id,
-                    queue: req.params.id,
-                    number: number
+            Queue.findOne({_id: req.params.id})
+                .populate('facility')
+                .exec()
+                .then(queue => {
+                    //load next property of the selected queue to set as user's number
+                    console.log("queue:", queue);
+                    let number = queue.next;
+                    let newReservation = new Reservation({
+                        user: req.user.id,
+                        queue: req.params.id,
+                        number: number
+                    });
+                    Reservation.addReservation(newReservation, (err, reservation) => {
+                        if (err) {
+                            res.status(500).json({success: false, msg: 'Failed to enter queue', err})
+                        } else {
+                            //update queue's next property
+                            Queue.findOneAndUpdate({_id: req.params.id}, {next: number + 1}, {
+                                new: true,
+                                runValidators: true
+                            })
+                                .then(newQueue => {
+                                    let response = reservation.toObject();
+                                    response.queue = queue;
+                                    res.json({success: true, msg: 'Entered queue', reservation: response});
+                                })
+                                .catch(error => {
+                                    res.status(500).json({success: false, msg: 'Failed to enter queue', err: error});
+                                })
+                        }
+                    })
                 });
-                Reservation.addReservation(newReservation, (err, reservation) => {
-                    if (err) {
-                        res.status(500).json({success: false, msg: 'Failed to enter queue', err})
-                    } else {
-                        //update queue's next property
-                        Queue.findOneAndUpdate({_id: req.params.id}, {next: number + 1}, {
-                            new: true,
-                            runValidators: true
-                        })
-                            .then(newQueue => {
-                                res.json({success: true, msg: 'Entered queue', reservation: reservation});
-                            })
-                            .catch(error => {
-                                res.status(500).json({success: false, msg: 'Failed to enter queue', err: error});
-                            })
-                    }
-                })
-            });
         }
     });
 });

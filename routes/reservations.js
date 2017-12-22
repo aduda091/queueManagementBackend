@@ -19,9 +19,9 @@ router.get('/:id', passport.authenticate('jwt', {session: false}), (req, res, ne
 
 // Delete a single reservation by ID  (i.e. exit queue)
 router.delete('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {
-    Reservation.findOne({ _id: req.params.id, user: req.user.id})
+    Reservation.findOne({ _id: req.params.id})
         .then( (reservation)=> {
-            if(reservation.user = req.user.id) {
+            if(reservation.user === req.user.id || req.user.role === "admin") {
                 reservation.remove().then( ()=> {
                     res.json({success: true, msg: 'Successfully removed reservation'});
                 })
