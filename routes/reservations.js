@@ -85,7 +85,8 @@ router.get('/queue/:queueId', (req, res, next) => {
         .populate({path: 'user', select: 'id firstName lastName mail'})
         .exec()
         .then(reservations => {
-            res.send(reservations);
+            if(reservations.length) res.send(reservations);
+            else res.status(404).json({success: false, msg: 'Unable to find reservations'});
         })
 });
 

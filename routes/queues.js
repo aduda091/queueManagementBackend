@@ -15,7 +15,7 @@ router.get('/:id', (req, res, next) => {
             res.send(queue);
         })
         .catch(err => {
-            res.send(err, 404);
+            res.status(404).send(err);
         })
 });
 
@@ -37,8 +37,81 @@ router.put('/:id', passport.authenticate('jwt', {session: false}), (req, res, ne
 });
 
 
-//todo: admin route for NEXT user - set queue's current number to the next found reservation's number property, return current reservation data
-//router.
+//admin route for NEXT user - set queue's current number to the next found reservation's number property, return current reservation data
+router.delete('/:id/next', passport.authenticate('jwt', {session: false}), (req, res, next) => {
+    let role = req.user.role;
+    //protect route, limit to admins only
+    if (role !== 'admin')
+        res.status(403).json({success: false, msg: 'Unauthorized'});
+
+    //first find selected queue's properties
+    Queue.findById(req.params.id).then(queue => {
+        let current = queue.current;
+        let next = queue.next;
+        //empty queue
+        if (current === 0 && next === 1) res.status(500).json({success: false, msg: 'Unable to proceed - empty queue'});
+        else if (current === 0) {
+            //non-empty queue but current is 0 - never used NEXT before
+            Reservation.findOne({queue: req.params.id})
+                .populate('user')
+                .exec()
+                .then(nextReservation => {
+                    //set queue's current property to first reservation's number
+                    queue.current = nextReservation.number;
+                    queue.save((err, updatedQueue) => {
+                        if (err) {
+                            //problem editing queue
+                            res.status(500).json({success: false, msg: 'Unable to update queue', err});
+                        }
+                        else {
+                            //successfully updated current queue's current number to first reservation's number
+                            res.send(nextReservation);
+                        }
+                    });
+
+                })
+                .catch(err => {
+                    res.status(500).json({success: false, msg: 'Unable to update queue', err});
+                })
+        } else {
+            //non-empty queue, used NEXT before
+            //find reservations belonging to this queue
+            Reservation.find({queue: req.params.id})
+                .populate('user')
+                .exec()
+                .then(reservations => {
+                    let currentReservation = reservations[0];
+                    //remove currently serving reservation
+                    currentReservation.remove().then(() => {
+                        if (reservations.length > 1) {
+                            //there is a next user after current
+                            let nextReservation = reservations[1];
+                            //set queue's current property to first reservation's number
+                            queue.current = nextReservation.number;
+                            queue.save((err, updatedQueue) => {
+                                if (err) {
+                                    //problem editing queue
+                                    res.status(500).json({success: false, msg: 'Unable to update queue', err});
+                                }
+                                else {
+                                    //successfully updated current queue's current number to next reservation's number
+                                    res.send(nextReservation);
+                                }
+                            });
+
+                        } else {
+                            //the current user was last in queue
+                            res.json({success: true, msg: 'No more users in queue'})
+                        }
+                    });
+
+                })
+                .catch(err => {
+                    res.status(500).json({success: false, msg: 'Unable to update queue', err});
+                });
+        }
+    })
+});
 
 //admin route to RESET current queue - delete all reservations and set current/next numbers to 0/1
 router.delete('/:id/reset', passport.authenticate('jwt', {session: false}), (req, res, next) => {

@@ -64,7 +64,11 @@ PUT /queues/:id         // Edits a single queue by ID, needs admin token
 ```
 
 ```bash
-DELETE /queues/:id/reset         // Resets a queue by ID (current:0, next:1, delete belonging reservations) needs admin token
+DELETE /queues/:id/reset         // Resets a queue by ID (current:0, next:1, delete belonging reservations), needs admin token
+```
+
+```bash
+DELETE /queues/:id/next         // Advances a queue by ID, returns next reservation (or first if current==0), needs admin token
 ```
 
 ### /reservations
