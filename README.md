@@ -88,6 +88,11 @@ GET /reservations/queue/:id         // Returns all reservations in a queue by ID
 DELETE /reservations/:id         // Exit a queue (remove reservation) by ID, needs token
 ```
 
+### /tests
+```bash
+POST /tests/addRandomUser         // Register a new random user, needs admin token
+```
+
 ## JSON Format (Schema)
 ### User
 {firstName, lastName, mail, password, role(defaults to 'user')}
