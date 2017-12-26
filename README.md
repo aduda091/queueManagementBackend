@@ -77,7 +77,7 @@ GET /reservations/:id         // Returns a single reservation by ID
 ```
 
 ```bash
-POST /reservations/queues/:id         // Enter a queue by ID, needs token
+POST /reservations/:id         // Enter a queue by ID, needs token
 ```
 
 ```bash

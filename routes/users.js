@@ -41,7 +41,7 @@ router.post('/login', (req, res, next) => {
     User.getUserByMail(mail, (err, user) => {
         if (err) throw err;
         if (!user) {
-            return res.json({success: false, msg: 'User not found'});
+            return res.status(404).json({success: false, msg: 'User not found'});
         }
 
         User.comparePassword(password, user.password, (err, isMatch) => {
@@ -63,7 +63,7 @@ router.post('/login', (req, res, next) => {
                     },
                 });
             } else {
-                return res.json({success: false, msg: 'Wrong password'});
+                return res.status(403).json({success: false, msg: 'Wrong password'});
             }
         });
     });
