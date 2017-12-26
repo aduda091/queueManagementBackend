@@ -18,7 +18,7 @@ npm start
 ## Endpoints
 ### /users
 ```bash
-POST /users/register
+POST /users/register // Registers a new user
 ```
 
 ```bash

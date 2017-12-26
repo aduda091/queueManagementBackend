@@ -63,7 +63,7 @@ router.post('/:id', passport.authenticate('jwt', {session: false}), (req, res, n
 router.delete('/:id', passport.authenticate('jwt', {session: false}), (req, res, next) => {
     Reservation.findOne({_id: req.params.id})
         .then((reservation) => {
-            if (reservation.user === req.user.id || req.user.role === "admin") {
+            if (reservation.user.toString() === req.user.id.toString() || req.user.role === "admin") {
                 reservation.remove().then(() => {
                     res.json({success: true, msg: 'Successfully removed reservation'});
                 })

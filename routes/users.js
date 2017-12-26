@@ -20,13 +20,13 @@ router.post('/register', (req, res, next) => {
         if (!foundUser) {
             User.addUser(newUser, (err, user) => {
                 if (err) {
-                    res.json({success: false, msg: 'Failed to register user', err});
+                    res.status(404).json({success: false, msg: 'Failed to register user', err});
                 } else {
                     res.json({success: true, msg: 'User registered'});
                 }
             });
         } else {
-            res.status(409).json({success: false, msg: 'Failed to register user, mail is already taken'})
+            res.status(409).json({success: false, msg: 'Failed to register user, mail is already taken'});
         }
     });
 
@@ -88,7 +88,7 @@ router.get('/me', passport.authenticate('jwt', {session: false}), (req, res, nex
                 res.json({user: customUser});
             })
             .catch(err => {
-                res.send(err, 404);
+                res.status(404).send(err);
             });
 
     }
