@@ -81,30 +81,50 @@ router.delete('/:id/next', passport.authenticate('jwt', {session: false}), (req,
                 .exec()
                 .then(reservations => {
                     let currentReservation = reservations[0];
-                    //remove currently serving reservation
-                    currentReservation.remove().then(() => {
-                        if (reservations.length > 1) {
-                            //there is a next user after current
-                            let nextReservation = reservations[1];
-                            //set queue's current property to first reservation's number
-                            queue.current = nextReservation.number;
+                    //check if there are more reservations
+                    if (reservations.length > 1) {
+                        //there are more reservations after current one
+                        if (currentReservation.number == queue.current) {
+                            //remove currently serving reservation
+                            currentReservation.remove().then(() => {
+                                //there is a next user after current
+                                let nextReservation = reservations[1];
+                                //set queue's current property to next reservation's number
+                                queue.current = nextReservation.number;
+                                queue.save((err, updatedQueue) => {
+                                    if (err) {
+                                        //problem editing queue
+                                        res.status(500).json({success: false, msg: 'Unable to update queue', err});
+                                    }
+                                    else {
+                                        //successfully updated current queue's current number to next reservation's number
+                                        res.json({reservation:nextReservation});
+                                    }
+                                });
+                            })
+                        } else {
+                            //there are more reservations but this one was never current
+                            //set current queue number to the current reservation
+                            queue.current = currentReservation.number;
                             queue.save((err, updatedQueue) => {
                                 if (err) {
                                     //problem editing queue
                                     res.status(500).json({success: false, msg: 'Unable to update queue', err});
                                 }
-                                else {
-                                    //successfully updated current queue's current number to next reservation's number
-                                    res.send(nextReservation);
-                                }
-                            });
-
-                        } else {
-                            //the current user was last in queue
-                            res.json({success: true, msg: 'No more users in queue'})
+                                else res.json({success: true, msg: 'Next user', reservation:currentReservation});
+                            })
                         }
-                    });
-
+                    } else {
+                        //the current user was last in queue
+                        queue.current = currentReservation.number;
+                        queue.save((err, updatedQueue) => {
+                            if (err) {
+                                //problem editing queue
+                                res.status(500).json({success: false, msg: 'Unable to update queue', err});
+                            }
+                            else res.json({success: true, msg: 'No more users in queue', reservation:currentReservation});
+                        })
+                    }
                 })
                 .catch(err => {
                     res.status(500).json({success: false, msg: 'Unable to update queue', err});
