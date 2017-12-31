@@ -51,16 +51,19 @@ router.post('/login', (req, res, next) => {
                     expiresIn: 2592000, // 1 month
                 });
 
-                res.json({
-                    success: true,
-                    token: 'JWT ' + token,
-                    user: {
-                        id: user.id,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        mail: user.mail,
-                        role: user.role,
-                    },
+                Reservation.find({user: user.id}).then( reservations => {
+                    res.json({
+                        success: true,
+                        token: 'JWT ' + token,
+                        user: {
+                            id: user.id,
+                            firstName: user.firstName,
+                            lastName: user.lastName,
+                            mail: user.mail,
+                            role: user.role,
+                        },
+                        reservations
+                });
                 });
             } else {
                 return res.status(403).json({success: false, msg: 'Wrong password'});
