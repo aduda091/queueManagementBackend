@@ -17,6 +17,7 @@
     "cors": "*",
     "express": "*",
     "faker": "^4.1.0",
+    "firebase-admin": "^5.6.0",
     "jsonwebtoken": "*",
     "mongoose": "*",
     "passport": "*",

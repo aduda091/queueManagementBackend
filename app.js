@@ -5,6 +5,14 @@ const passport = require('passport');
 const mongoose = require('mongoose');
 const config = require('./config/database');
 
+//Firebase
+const admin = require("firebase-admin");
+const serviceAccount = require("./config/justintimeandroi-1497564015565-firebase-adminsdk-pydad-e8847ed0e6.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://justintimeandroi-1497564015565.firebaseio.com"
+});
+
 /*   skeleton project (user registration, authorization and login) taken from Brad Traversy at https://github.com/bradtraversy/nodeauthapp  */
 
 // Connect To Database

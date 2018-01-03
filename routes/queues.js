@@ -5,6 +5,8 @@ const Facility = require('../models/facility');
 const Queue = require('../models/queue');
 const Reservation = require('../models/reservation');
 
+const admin = require('firebase-admin');
+
 // Read a single queue by ID
 router.get('/:id', (req, res, next) => {
     Queue.findById(req.params.id)
@@ -44,6 +46,9 @@ router.delete('/:id/next', passport.authenticate('jwt', {session: false}), (req,
     if (role !== 'admin')
         res.status(403).json({success: false, msg: 'Unauthorized'});
 
+    //firebase topic - queue ID
+    let topic = req.params.id;
+
     //first find selected queue's properties
     Queue.findById(req.params.id).then(queue => {
         let current = queue.current;
@@ -65,7 +70,28 @@ router.delete('/:id/next', passport.authenticate('jwt', {session: false}), (req,
                         }
                         else {
                             //successfully updated current queue's current number to first reservation's number
-                            res.send(nextReservation);
+                            //send FCM message containing queueID and current number
+                            let payload = {
+                                data: {
+                                    queueId: queue.id,
+                                    current: updatedQueue.current
+                                }
+                            };
+                            // Send a message to devices subscribed to the provided topic.
+                            admin.messaging().sendToTopic(topic, payload)
+                                .then(function (response) {
+                                    console.log("Successfully sent message:", response);
+                                    res.send(nextReservation);
+                                })
+                                .catch(function (error) {
+                                    console.log("Error sending message:", error);
+                                    res.status(500).json({
+                                        success: false,
+                                        msg: 'Unable to send push notification',
+                                        err: error
+                                    });
+                                });
+
                         }
                     });
 
@@ -98,7 +124,27 @@ router.delete('/:id/next', passport.authenticate('jwt', {session: false}), (req,
                                     }
                                     else {
                                         //successfully updated current queue's current number to next reservation's number
-                                        res.json({reservation:nextReservation});
+                                        //send FCM message containing queueID and current number
+                                        let payload = {
+                                            data: {
+                                                queueId: queue.id,
+                                                current: updatedQueue.current.toString()
+                                            }
+                                        };
+                                        // Send a message to devices subscribed to the provided topic.
+                                        admin.messaging().sendToTopic(topic, payload)
+                                            .then(function (response) {
+                                                console.log("Successfully sent message:", response);
+                                                res.send(nextReservation);
+                                            })
+                                            .catch(function (error) {
+                                                console.log("Error sending message:", error);
+                                                res.status(500).json({
+                                                    success: false,
+                                                    msg: 'Unable to send push notification',
+                                                    err: error
+                                                });
+                                            });
                                     }
                                 });
                             })
@@ -111,7 +157,34 @@ router.delete('/:id/next', passport.authenticate('jwt', {session: false}), (req,
                                     //problem editing queue
                                     res.status(500).json({success: false, msg: 'Unable to update queue', err});
                                 }
-                                else res.json({success: true, msg: 'Next user', reservation:currentReservation});
+                                else {
+                                    //send FCM message containing queueID and current number
+                                    let payload = {
+                                        data: {
+                                            queueId: queue.id,
+                                            current: updatedQueue.current.toString()
+                                        }
+                                    };
+                                    // Send a message to devices subscribed to the provided topic.
+                                    admin.messaging().sendToTopic(topic, payload)
+                                        .then(function (response) {
+                                            console.log("Successfully sent message:", response);
+                                            res.json({
+                                                success: true,
+                                                msg: 'Next user',
+                                                reservation: currentReservation
+                                            });
+                                        })
+                                        .catch(function (error) {
+                                            console.log("Error sending message:", error);
+                                            res.status(500).json({
+                                                success: false,
+                                                msg: 'Unable to send push notification',
+                                                err: error
+                                            });
+                                        });
+
+                                }
                             })
                         }
                     } else {
@@ -122,7 +195,36 @@ router.delete('/:id/next', passport.authenticate('jwt', {session: false}), (req,
                                 //problem editing queue
                                 res.status(500).json({success: false, msg: 'Unable to update queue', err});
                             }
-                            else res.json({success: true, msg: 'No more users in queue', reservation:currentReservation});
+                            else {
+
+                                //send FCM message containing queueID and current number
+                                let payload = {
+                                    data: {
+                                        queueId: queue.id,
+                                        current: updatedQueue.current.toString()
+                                    }
+                                };
+                                // Send a message to devices subscribed to the provided topic.
+                                admin.messaging().sendToTopic(topic, payload)
+                                    .then(function (response) {
+                                        console.log("Successfully sent message:", response);
+                                        res.json({
+                                            success: true,
+                                            msg: 'No more users in queue',
+                                            reservation: currentReservation
+                                        });
+                                    })
+                                    .catch(function (error) {
+                                        console.log("Error sending message:", error);
+                                        res.status(500).json({
+                                            success: false,
+                                            msg: 'Unable to send push notification',
+                                            err: error
+                                        });
+                                    });
+
+
+                            }
                         })
                     }
                 })
