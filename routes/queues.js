@@ -74,7 +74,7 @@ router.delete('/:id/next', passport.authenticate('jwt', {session: false}), (req,
                             let payload = {
                                 data: {
                                     queueId: queue.id,
-                                    current: updatedQueue.current
+                                    current: updatedQueue.current.toString()
                                 }
                             };
                             // Send a message to devices subscribed to the provided topic.
