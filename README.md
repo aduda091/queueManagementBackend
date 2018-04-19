@@ -1,9 +1,9 @@
-# dustIn Time Queue Management API
+# Queue Management Application - Backend
 
-Queue management application
-
-### Version
-1.0.0
+## Master's degree project consisting of: 
+* node.js/express backend 
+* Vue.js Web application (https://github.com/aduda091/queueManagementWeb)
+* Android mobile application (https://github.com/aduda091/queueManagementAndroid)
 
 ## Usage
 
